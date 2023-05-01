@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Modal from "../../components/modal";
 
 export default function Home() {
   const [xTurn, setXTurn] = useState(true);
@@ -44,6 +45,7 @@ export default function Home() {
       boardTemp[idx].val = value
       setBoardData(boardTemp);
       setXTurn(!xTurn);
+      setFilledSquare(filledSquare + 1)
     }
   };
 
@@ -93,8 +95,7 @@ export default function Home() {
     [2, 4, 6],
   ];
 
-  const checkWinner = () : void =>{
-    console.log("cwin")
+  const checkWinner = useCallback(() => {
     WINNING_COMBO.map((bd) => {
       const [a,b,c] = bd;
       if(boardData[a].val && boardData[a].val === boardData[b].val && boardData[a].val === boardData[c].val){
@@ -102,21 +103,21 @@ export default function Home() {
         setModalTitle(`${boardData[a].val} Win !!!`);
       }
     })
-  }
+  },[])
 
-  const checkDraw = () : void =>{
-    console.log("cdraw")
-    setFilledSquare(filledSquare + 1)
-    if(filledSquare == 9 ) {
-      setIsDraw(true)
-      setModalTitle("Match Draw!!!");
-    }
-  }
+  const checkDraw = useCallback(() => {
+    setIsDraw(true)
+    setModalTitle("Match Draw!!!");
+  },[])
 
   useEffect(() => {
-    checkWinner();
-    checkDraw();
-  }, [boardData])
+    if(filledSquare >= 5){
+      checkWinner();
+    }
+    if(filledSquare == 9 ) {
+      checkDraw();
+    }
+  }, [boardData, filledSquare, checkDraw, checkWinner])
   return (
     <div>
       <h1>Tic Tac Toe Bernat</h1>
@@ -138,10 +139,11 @@ export default function Home() {
             );
           })}
         </div>
-        <div className={`modal ${modalTitle ? "show" : ""}`}>
+        {/* <div className={`modal ${modalTitle ? "show" : ""}`}>
           <div className="modal__title">{modalTitle}</div>
           <button onClick={reset}>New Game</button>
-        </div>
+        </div> */}
+        <Modal modalTitle={modalTitle} reset={reset}/>
       </div>
     </div>
   );
