@@ -79,38 +79,41 @@ export default function Home() {
     setWon(false);
     setIsDraw(false);
     setModalTitle("");
+    setFilledSquare(0);
 };
   
-  useEffect(() => {
-    const WINNING_COMBO = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-  
-    const checkWinner = () =>{
-      WINNING_COMBO.map((bd) => {
-        const [a,b,c] = bd;
-        if(boardData[a].val && boardData[a].val === boardData[b].val && boardData[a].val === boardData[c].val){
-          setWon(true)
-          setModalTitle(`${boardData[a].val} Win !!!`);
-        }
-      })
-    }
+  const WINNING_COMBO = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
 
-    const checkDraw = () =>{
-      setFilledSquare(filledSquare + 1)
-      if(filledSquare == 9 ) {
-        setIsDraw(true)
-        setModalTitle("Match Draw!!!");
+  const checkWinner = () : void =>{
+    console.log("cwin")
+    WINNING_COMBO.map((bd) => {
+      const [a,b,c] = bd;
+      if(boardData[a].val && boardData[a].val === boardData[b].val && boardData[a].val === boardData[c].val){
+        setWon(true)
+        setModalTitle(`${boardData[a].val} Win !!!`);
       }
-    }
+    })
+  }
 
+  const checkDraw = () : void =>{
+    console.log("cdraw")
+    setFilledSquare(filledSquare + 1)
+    if(filledSquare == 9 ) {
+      setIsDraw(true)
+      setModalTitle("Match Draw!!!");
+    }
+  }
+
+  useEffect(() => {
     checkWinner();
     checkDraw();
   }, [boardData])
